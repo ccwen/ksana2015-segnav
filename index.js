@@ -27,9 +27,10 @@ var SegNav=React.createClass({
 			this.setState({segs:segs,segnow:segnow});
 		}
 	}
-	,goSeg:function(segnow) {
-		this.setState({segnow:segnow});
-		this.props.onGoSegment&&this.props.onGoSegment(this.state.segs[segnow]);
+	,goSeg:function(idx) {
+		this.setState({segnow:idx});
+		this.refs.seg.getDOMNode().value=this.state.segs[idx];
+		this.props.onGoSegment&&this.props.onGoSegment(this.state.segs[idx]);
 	}
 	,prev:function() {
 		var segnow=this.state.segnow;
@@ -44,13 +45,20 @@ var SegNav=React.createClass({
 	,onChange:function(e) {
 		var seg=e.target.value;
 		var idx=this.state.segs.indexOf(seg);
-		if (idx>-1) this.goSeg(idx);
+
+		clearTimeout(this.timer);
+		this.timer=setTimeout(function(){
+			if (idx>-1) this.goSeg(idx);
+			else {
+				this.refs.seg.getDOMNode().value=this.state.segs[this.state.segnow];
+			}
+		}.bind(this),1000);
 	}
 	,render : function() {
 		var segname=this.state.segs[this.state.segnow];
-		return E("div",null,
+		return E("span",null,
 			E(this.btn,{onClick:this.prev,disabled:this.state.segnow==0},"←"),
-			E("input",{value:segname,onChange:this.onChange}),
+			E("input",{ref:"seg",defaultValue:segname,onChange:this.onChange}),
 			E(this.btn,{onClick:this.next,disabled:this.state.segnow==this.state.segs.length-1},"→")
 		);
 	}
