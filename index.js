@@ -52,7 +52,7 @@ var SegNav=React.createClass({
 			else {
 				this.refs.seg.getDOMNode().value=this.state.segs[this.state.segnow];
 			}
-		}.bind(this),1000);
+		}.bind(this),2000);
 	}
 	,render : function() {
 		var segname=this.state.segs[this.state.segnow];
