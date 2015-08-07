@@ -24,12 +24,18 @@ var SegNav=React.createClass({
 			});
 			var segs=Object.keys(segnames);
 			var segnow=segs.indexOf(this.props.value)||0;
-			this.setState({segs:segs,segnow:segnow});
+			this.setState({segs:segs,segnow:segnow,segname:this.state.segs[segnow]});
 		}
 	}
+	,componentWillReceiveProps:function(nextProps) {
+		var idx=nextProps.segs.indexOf(nextProps.value);
+		if (idx>-1) {
+			this.setState({segnow:idx,segname:this.state.segs[idx]});
+		}
+		
+	}
 	,goSeg:function(idx) {
-		this.setState({segnow:idx});
-		this.refs.seg.getDOMNode().value=this.state.segs[idx];
+		this.setState({segnow:idx,segname:this.state.segs[idx]});
 		this.props.onGoSegment&&this.props.onGoSegment(this.state.segs[idx]);
 	}
 	,prev:function() {
@@ -42,10 +48,16 @@ var SegNav=React.createClass({
 		if (segnow<this.state.segs.length-1) segnow++;
 		this.goSeg(segnow);
 	}
+	,onKeyPress:function(e) {
+		if (e.key=="Enter") {
+			var idx=this.state.segs.indexOf(e.target.value);
+			if (idx>-1) this.goSeg(idx);
+		}
+	}
 	,onChange:function(e) {
-		var seg=e.target.value;
-		var idx=this.state.segs.indexOf(seg);
-
+		var segname=e.target.value;
+		var idx=this.state.segs.indexOf(segname);
+		this.setState({segname:segname});
 		clearTimeout(this.timer);
 		this.timer=setTimeout(function(){
 			if (idx>-1) this.goSeg(idx);
@@ -55,11 +67,10 @@ var SegNav=React.createClass({
 		}.bind(this),2000);
 	}
 	,render : function() {
-		var segname=this.state.segs[this.state.segnow];
 		return E("span",null,
-			E(this.btn,{onClick:this.prev,disabled:this.state.segnow==0},"←"),
-			E("input",{ref:"seg",defaultValue:segname,onChange:this.onChange}),
-			E(this.btn,{onClick:this.next,disabled:this.state.segnow==this.state.segs.length-1},"→")
+			E(this.btn,{style:this.props.style,onClick:this.prev,disabled:this.state.segnow==0},"←"),
+			E("input",{size:8,style:this.props.style,ref:"seg",value:this.state.segname,onKeyPress:this.onKeyPress,onChange:this.onChange}),
+			E(this.btn,{style:this.props.style,onClick:this.next,disabled:this.state.segnow==this.state.segs.length-1},"→")
 		);
 	}
 })
