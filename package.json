@@ -1,6 +1,6 @@
 {
   "name": "ksana2015-segnav",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Segment Navigator",
   "main": "index.js",
   "scripts": {
