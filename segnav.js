@@ -1,10 +1,9 @@
-var React=require("react/addons");
+var React=require("react");
 
 var E=React.createElement;
 var PT=React.PropTypes;
 var SegNav=React.createClass({
-	mixins:[React.addons.PureRender]
-	,propTypes:{
+	propTypes:{
 		"segpat":PT.string
 		,"value":PT.string
 		,"segs":PT.array.isRequired
